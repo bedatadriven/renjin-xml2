@@ -1,0 +1,80 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.maartenjan</groupId>
+  <artifactId>xml2</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>renjin-xml2</name>
+  <url>https://github.com/mjkallen/renjin-xml2</url>
+
+  <licenses>
+    <license>
+      <name>GNU General Public License, Version 2.0</name>
+      <url>https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <renjin.version>0.8.2124</renjin.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.renjin</groupId>
+      <artifactId>renjin-core</artifactId>
+      <version>${renjin.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.renjin</groupId>
+      <artifactId>hamcrest</artifactId>
+      <version>${renjin.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <repositories>
+    <repository>
+      <id>bedatadriven</id>
+      <name>bedatadriven public repo</name>
+      <url>http://nexus.bedatadriven.com/content/groups/public/</url>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>bedatadriven</id>
+      <name>bedatadriven public repo</name>
+      <url>http://nexus.bedatadriven.com/content/groups/public/</url>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <build>
+      <plugins>
+        <plugin>
+          <groupId>org.renjin</groupId>
+          <artifactId>renjin-maven-plugin</artifactId>
+          <version>${renjin.version}</version>
+          <executions>
+            <execution>
+              <id>build</id>
+              <goals>
+                <goal>namespace-compile</goal>
+              </goals>
+              <phase>compile</phase>
+            </execution>
+            <execution>
+              <id>test</id>
+              <goals>
+                <goal>test</goal>
+              </goals>
+              <phase>test</phase>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+  </build>
+</project>

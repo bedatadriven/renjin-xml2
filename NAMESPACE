@@ -1,0 +1,9 @@
+
+export(read_xml)
+export(xml_name)
+
+S3method(read_xml,character)
+S3method(read_xml,default)
+S3method(print,xml_document)
+
+importClass(org.maartenjan.xml2.XmlDocumentParser)
