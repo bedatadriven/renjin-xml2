@@ -7,13 +7,12 @@ test.read_xml <- function() {
   xml <- "<p>Hello world!</p>"
 
   # A somewhat lame test:
-  assertThat(read_xml(xml), instanceOf("xml_document"))
+  assertThat( read_xml(xml), instanceOf("xml_document") )
+  assertThat( names(read_xml(xml)), identicalTo(c("node", "doc")) )
 
-  # The following test doesn't work as we can't handle Java exceptions (yet)
-  # in the R code (see https://github.com/bedatadriven/renjin/issues/134):
-
-  # xml <- "<h1>Malformed XML</h1><p>Hello world!</p>"
-  # assertThat(read_xml(xml), throwsError())
+  # An XML document must have a single node at the root:
+  xml <- "<h1>Malformed XML</h1><p>Hello world!</p>"
+  assertThat( read_xml(xml), throwsError() )
 
 }
 
@@ -23,6 +22,6 @@ test.xml_name <- function() {
   doc <- read_xml(xml)
 
   # An 'xml_document' object is represented by its root node:
-  assertThat(xml_name(doc), identicalTo("p"))
+  assertThat( xml_name(doc), identicalTo("p") )
 
 }

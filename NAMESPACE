@@ -1,9 +1,12 @@
 
 export(read_xml)
 export(xml_name)
+export(xml_children)
 
 S3method(read_xml,character)
 S3method(read_xml,default)
 S3method(print,xml_document)
+S3method(print,xml_node)
+S3method(as.character,xml_node)
 
 importClass(org.maartenjan.xml2.XmlDocumentParser)

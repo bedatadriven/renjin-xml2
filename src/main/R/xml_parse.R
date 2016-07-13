@@ -5,9 +5,7 @@ read_xml <- function(x, ...) {
 }
 
 read_xml.character <- function(x, ...) {
-  doc <- XmlDocumentParser$parse(x) # Java class is 'Document'
-  root <- doc_root(doc)
-  structure(list(node = root, doc = doc), class = c("xml_document", "xml_node"))
+  XmlDocumentParser$parse(x)
 }
 
 read_xml.default <- function(x, ...) {
@@ -16,11 +14,7 @@ read_xml.default <- function(x, ...) {
 
 print.xml_document <- function(x) {
   cat("{xml_document}\n")
-  cat("<", xml_name(x), ">\n", sep = "")
-}
-
-doc_root <- function(doc) {
-  XmlDocumentParser$doc_root(doc) # Java class is 'Element'
+  cat(XmlDocumentParser$node_format(x$node), "\n")
 }
 
 xml_name <- function(x, ...) {
@@ -29,4 +23,13 @@ xml_name <- function(x, ...) {
 
 node_name <- function(x, ...) {
   XmlDocumentParser$node_name(x$node)
+}
+
+as.character.xml_node <- function(x, ...) {
+  XmlDocumentParser$node_format(x$node)
+}
+
+print.xml_node <- function(x) {
+  cat("{xml_node}\n")
+  cat(XmlDocumentParser$node_format(x$node), "\n")
 }
