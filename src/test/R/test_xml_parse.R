@@ -16,12 +16,12 @@ test.read_xml <- function() {
 
 }
 
-test.xml_name <- function() {
+test.xml_node <- function() {
 
-  xml <- "<p>Hello world!</p>"
-  doc <- read_xml(xml)
+  doc <- read_xml("<p>foobar</p>")
+  root <- doc$node
 
-  # An 'xml_document' object is represented by its root node:
-  assertThat( xml_name(doc), identicalTo("p") )
+  # private methods should not be visible to the R code:
+  assertThat( org.maartenjan.xml2:::xml_node(root), throwsError() )
 
 }

@@ -11,3 +11,8 @@ read_xml.character <- function(x, ...) {
 read_xml.default <- function(x, ...) {
   stop("no method for object of class ", class(x))
 }
+
+# non-exported function to test if the R code can access private methods in the Java class:
+xml_node <- function(x) {
+  XmlDocumentParser$xml_node(x)
+}
