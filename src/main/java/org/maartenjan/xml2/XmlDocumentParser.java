@@ -1,10 +1,8 @@
 package org.maartenjan.xml2;
 
 import org.renjin.sexp.*;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.renjin.util.NamesBuilder;
+import org.w3c.dom.*;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -146,6 +144,30 @@ public class XmlDocumentParser {
         return "Other";
     }
 
+  }
+
+  public static StringArrayVector xml_attrs(Node node) {
+
+    NamedNodeMap attrs = node.getAttributes();
+
+    AttributeMap.Builder attributes = AttributeMap.builder();
+    NamesBuilder names = NamesBuilder.withInitialCapacity(attrs.getLength());
+
+    String[] values = new String[attrs.getLength()];
+
+    // only Element nodes can have attributes
+    if (node.getNodeType() == Node.ELEMENT_NODE && node.hasAttributes()) {
+      for(int i = 0 ; i < attrs.getLength() ; ++i) {
+        Attr attribute = (Attr) attrs.item(i);
+        values[i] = attribute.getValue();
+        names.add(attribute.getName());
+      }
+      attributes.setNames((StringVector)names.build());
+    } else {
+      attributes.setNames(StringVector.EMPTY).build();
+    }
+
+    return new StringArrayVector(values, attributes.build());
   }
 
 }
