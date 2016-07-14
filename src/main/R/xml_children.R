@@ -3,3 +3,7 @@
 xml_children <- function(x) {
   XmlDocumentParser$xml_children(x$node)
 }
+
+xml_contents <- function(x) {
+  XmlDocumentParser$xml_contents(x$node)
+}

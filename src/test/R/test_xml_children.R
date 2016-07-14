@@ -12,4 +12,14 @@ test.xml_children <- function() {
 
     assertThat( length(xml_children(read_xml("<p>foobar</p>"))), equalTo(0) )
 
+    assertThat( length(xml_children(read_xml("<html><p>foobar</p><!-- comment --></html>"))), equalTo(1) )
+
+}
+
+test.xml_contents <- function() {
+
+    doc <- read_xml("<html><p>foobar</p><!-- comment --></html>")
+
+    assertThat( length(xml_contents(doc)), equalTo(2) )
+
 }

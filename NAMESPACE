@@ -2,6 +2,7 @@
 export(read_xml)
 export(xml_name)
 export(xml_children)
+export(xml_contents)
 
 S3method(read_xml,character)
 S3method(read_xml,default)

@@ -66,11 +66,24 @@ public class XmlDocumentParser {
     return xml_document(root, doc);
   }
 
-  public static String node_name(Element node) {
-    return(node.getTagName());
+  public static String node_name(Node node) {
+
+    short type = node.getNodeType();
+
+    switch(type) {
+      case Node.ELEMENT_NODE:
+        return node.getNodeName();
+      case Node.TEXT_NODE:
+        return "text";
+      case Node.COMMENT_NODE:
+        return "comment";
+      default:
+        return "";
+    }
+
   }
 
-  public static ListVector xml_children(Element node) {
+  private static ListVector xml_children(Node node, boolean elements_only) {
 
     NodeList children = node.getChildNodes();
 
@@ -78,8 +91,8 @@ public class XmlDocumentParser {
     Node child;
     for (int i = 0; i < children.getLength(); ++i) {
       child = children.item(i);
-      if (child instanceof Element) {
-        ns.add(xml_node((Element) child));
+      if (!elements_only || child instanceof Element) {
+        ns.add(xml_node(child));
       }
     }
 
@@ -88,39 +101,51 @@ public class XmlDocumentParser {
     return ns.build();
   }
 
-  private static ListVector xml_node(Element node) {
+  public static ListVector xml_children(Node node) {
+    return xml_children(node, true);
+  }
+
+  public static ListVector xml_contents(Node node) {
+    return xml_children(node, false);
+  }
+
+  private static ListVector xml_node(Node node) {
 
     ListVector.NamedBuilder lv = new ListVector.NamedBuilder();
 
-    lv.add("node", new ExternalPtr<Element>(node));
+    lv.add("node", new ExternalPtr<Node>(node));
     lv.add("doc", new ExternalPtr<Document>(node.getOwnerDocument()));
     lv.setAttribute("class", new StringArrayVector("xml_node"));
 
     return lv.build();
   }
 
-  private static ListVector xml_document(Element node, Document doc) {
+  private static ListVector xml_document(Node node, Document doc) {
 
     ListVector.NamedBuilder lv = new ListVector.NamedBuilder();
 
-    lv.add("node", new ExternalPtr<Element>(node));
+    lv.add("node", new ExternalPtr<Node>(node));
     lv.add("doc", new ExternalPtr<Document>(doc));
     lv.setAttribute("class", new StringArrayVector("xml_document", "xml_node"));
 
     return lv.build();
   }
 
-  public static String node_format(Element node) {
+  public static String node_format(Node node) {
 
-    String tag = node.getNodeName();
-    String content;
+    short type = node.getNodeType();
 
-    if(node.hasChildNodes() && node.getFirstChild().getNodeType() == Node.TEXT_NODE) {
-      content = node.getFirstChild().getTextContent();
-    } else {
-      content = "...";
+    switch(type) {
+      case Node.TEXT_NODE:
+        return "Text: " + node.getTextContent();
+      case Node.ELEMENT_NODE:
+        return "Element: " + node.getNodeName();
+      case Node.COMMENT_NODE:
+        return "Comment: " + node.getNodeValue();
+      default:
+        return "Other";
     }
 
-    return "<" + tag + ">" + content + "</" + tag + ">" ;
   }
+
 }
