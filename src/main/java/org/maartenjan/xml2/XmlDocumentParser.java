@@ -15,14 +15,17 @@ import java.io.IOException;
 import java.io.StringReader;
 
 /**
- * Parse XML documents from R code.
+ * Parses XML documents from R code.
+ *
+ * <p>Note that only public methods are accessible from R code.</p>
  */
 public class XmlDocumentParser {
 
   /**
+   * Parse an XML document as a string.
    *
    * @param xml   a string with XML
-   * @return      an R list with classes xml_document and xml_node
+   * @return      an R list with classes <code>xml_document</code> and <code>xml_node</code>
    * @throws IOException
    */
   public static ListVector parse(String xml) throws IOException {
@@ -64,6 +67,14 @@ public class XmlDocumentParser {
     return xml_document(root, doc);
   }
 
+  /**
+   * Returns the name of a document node.
+   *
+   * @param node  a document node
+   * @return      a character string with the name of the element tag (e.g. 'p' or 'html').
+   *              For text and comment nodes, this method returns 'text' and 'comment' respectively
+   *              and an empty string for all other node types.
+   */
   public static String node_name(Node node) {
 
     short type = node.getNodeType();
@@ -99,10 +110,22 @@ public class XmlDocumentParser {
     return ns.build();
   }
 
+  /**
+   * Returns the child elements of a document node.
+   *
+   * @param node  a document node
+   * @return      an R list of class <code>xml_nodeset</code>
+   */
   public static ListVector xml_children(Node node) {
     return xml_children(node, true);
   }
 
+  /**
+   * Returns all direct descendants of a document node.
+   *
+   * @param node  a document node
+   * @return      an R list of class <code>xml_nodeset</code>
+   */
   public static ListVector xml_contents(Node node) {
     return xml_children(node, false);
   }
@@ -146,6 +169,13 @@ public class XmlDocumentParser {
 
   }
 
+  /**
+   * Returns the attributes of a document node.
+   *
+   * @param node  a document node
+   * @return      a named R list in which the names are the attribute names and
+   *              the values are the attribute values.
+   */
   public static StringArrayVector xml_attrs(Node node) {
 
     NamedNodeMap attrs = node.getAttributes();

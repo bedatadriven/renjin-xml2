@@ -10,7 +10,10 @@ test.xml_children <- function() {
     assertThat( length(xml_children(doc)), equalTo(2) )
     assertThat( xml_children(doc)[[1]], instanceOf("xml_node") )
 
-    assertThat( length(xml_children(read_xml("<p>foobar</p>"))), equalTo(0) )
+    assertThat(
+        xml_children(read_xml("<p>foobar</p>")),
+        identicalTo(structure(list(), class = "xml_nodeset"))
+    )
 
     assertThat( length(xml_children(read_xml("<html><p>foobar</p><!-- comment --></html>"))), equalTo(1) )
 
