@@ -14,8 +14,11 @@ test.read_xml <- function() {
   xml <- "<h1>Malformed XML</h1><p>Hello world!</p>"
   assertThat( read_xml(xml), throwsError() )
 
-  # Test validation with a DTD:
+  # Test that validation fails for an XML document without a DTD:
+  xml <- '<foo><bar>foobar</bar></foo>'
   assertThat( read_xml(xml, options = "DTDVALID"), throwsError() )
+
+  # A valid XML document should pass the validity check and result in an xml_document:
   xml <- '<?xml version="1.0"?><!DOCTYPE foo [ <!ELEMENT foo (#PCDATA)> ]><foo>Hello world!</foo>'
   assertThat( read_xml(xml, options = "DTDVALID"), instanceOf("xml_document") )
 

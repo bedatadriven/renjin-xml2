@@ -164,7 +164,11 @@ public class XmlDocumentParser {
       case Node.TEXT_NODE:
         return "Text: " + node.getTextContent();
       case Node.ELEMENT_NODE:
-        return "Element: " + node.getNodeName();
+        if (node == node.getOwnerDocument().getDocumentElement()) {
+          return "Root: " + node.getNodeName();
+        } else {
+          return "Element: " + node.getNodeName();
+        }
       case Node.COMMENT_NODE:
         return "Comment: " + node.getNodeValue();
       default:
