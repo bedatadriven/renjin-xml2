@@ -28,9 +28,13 @@ public class XmlDocumentParser {
    * @return      an R list with classes <code>xml_document</code> and <code>xml_node</code>
    * @throws IOException
    */
-  public static ListVector parse(String xml) throws IOException {
+  public static ListVector parse(String xml, boolean dtdvalid, boolean noblanks) throws IOException {
 
     DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+    builderFactory.setNamespaceAware(true);
+    builderFactory.setValidating(dtdvalid);
+    builderFactory.setIgnoringElementContentWhitespace(noblanks);
+
     DocumentBuilder builder;
     try {
       builder = builderFactory.newDocumentBuilder();

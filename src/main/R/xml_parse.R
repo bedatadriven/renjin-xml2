@@ -4,8 +4,8 @@ read_xml <- function(x, ...) {
   UseMethod("read_xml", x)
 }
 
-read_xml.character <- function(x, ...) {
-  XmlDocumentParser$parse(x)
+read_xml.character <- function(x, options = "NOBLANKS") {
+  XmlDocumentParser$parse(x, "DTDVALID" %in% options, "NOBLANKS" %in% options)
 }
 
 read_xml.default <- function(x, ...) {
