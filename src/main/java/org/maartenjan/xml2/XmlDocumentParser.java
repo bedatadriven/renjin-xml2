@@ -1,5 +1,6 @@
 package org.maartenjan.xml2;
 
+import org.renjin.eval.EvalException;
 import org.renjin.sexp.*;
 import org.renjin.util.NamesBuilder;
 import org.w3c.dom.*;
@@ -134,6 +135,15 @@ public class XmlDocumentParser {
     return xml_children(node, false);
   }
 
+  public static ListVector xml_parent(Node node) {
+
+    Node parent = node.getParentNode();
+    if (parent == null) {
+      throw new EvalException("Parent does not exist");
+    }
+    return xml_node(parent);
+  }
+
   private static ListVector xml_node(Node node) {
 
     ListVector.NamedBuilder lv = new ListVector.NamedBuilder();
@@ -161,6 +171,8 @@ public class XmlDocumentParser {
     short type = node.getNodeType();
 
     switch(type) {
+      case Node.DOCUMENT_NODE:
+        return "Document";
       case Node.TEXT_NODE:
         return "Text: " + node.getTextContent();
       case Node.ELEMENT_NODE:
@@ -206,6 +218,10 @@ public class XmlDocumentParser {
     }
 
     return new StringArrayVector(values, attributes.build());
+  }
+
+  public static boolean identical_nodes(Node a, Node b) {
+    return a.isSameNode(b);
   }
 
 }

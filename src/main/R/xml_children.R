@@ -7,3 +7,12 @@ xml_children <- function(x) {
 xml_contents <- function(x) {
   XmlDocumentParser$xml_contents(x$node)
 }
+
+
+xml_parent <- function(x) {
+  UseMethod("xml_parent")
+}
+
+xml_parent.xml_node <- function(x) {
+  XmlDocumentParser$xml_parent(x$node)
+}

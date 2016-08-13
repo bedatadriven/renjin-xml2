@@ -16,3 +16,10 @@ read_xml.default <- function(x, ...) {
 xml_node <- function(x) {
   XmlDocumentParser$xml_node(x)
 }
+
+# non-exported function to check if two nodes are the same:
+identical_nodes <- function(x, y) {
+  stopifnot(inherits(x, "xml_node"))
+  stopifnot(inherits(y, "xml_node"))
+  XmlDocumentParser$identical_nodes(x$node, y$node)
+}

@@ -48,3 +48,19 @@ test.xml_contents <- function() {
     assertThat( length(xml_contents(doc)), equalTo(2) )
 
 }
+
+test.xml_parent <- function() {
+
+    doc <- read_xml('<foo><bar>Hello world!</bar><oof></oof></foo>')
+
+    children <- xml_children(doc)
+
+    # We need to use a special function to compare two nodes as R's identical() will return FALSE:
+    is.same <- org.maartenjan.xml2:::identical_nodes
+
+    assertTrue( is.same(xml_parent(children[[1]]), doc) )
+
+    # The root has a parent namely the document itself, but the document does not have a parent:
+    assertThat( xml_parent(xml_parent(doc)), throwsError() )
+
+}
