@@ -72,6 +72,7 @@ public class XmlDocumentParser {
     return xml_document(root, doc);
   }
 
+
   /**
    * Returns the name of a document node.
    *
@@ -97,6 +98,7 @@ public class XmlDocumentParser {
 
   }
 
+
   private static ListVector xml_children(Node node, boolean elements_only) {
 
     NodeList children = node.getChildNodes();
@@ -115,6 +117,7 @@ public class XmlDocumentParser {
     return ns.build();
   }
 
+
   /**
    * Returns the child elements of a document node.
    *
@@ -124,6 +127,7 @@ public class XmlDocumentParser {
   public static ListVector xml_children(Node node) {
     return xml_children(node, true);
   }
+
 
   /**
    * Returns all direct descendants of a document node.
@@ -135,6 +139,7 @@ public class XmlDocumentParser {
     return xml_children(node, false);
   }
 
+
   public static ListVector xml_parent(Node node) {
 
     Node parent = node.getParentNode();
@@ -143,6 +148,17 @@ public class XmlDocumentParser {
     }
     return xml_node(parent);
   }
+
+  /**
+   * Returns the root of a document
+   *
+   * @param doc   a document
+   * @return      an R list of class <code>xml_document</code>
+   */
+  public static ListVector xml_root(Document doc) {
+    return xml_document(doc.getDocumentElement(), doc);
+  }
+
 
   private static ListVector xml_node(Node node) {
 
@@ -155,6 +171,7 @@ public class XmlDocumentParser {
     return lv.build();
   }
 
+
   private static ListVector xml_document(Node node, Document doc) {
 
     ListVector.NamedBuilder lv = new ListVector.NamedBuilder();
@@ -165,6 +182,7 @@ public class XmlDocumentParser {
 
     return lv.build();
   }
+
 
   public static String node_format(Node node) {
 
@@ -188,6 +206,7 @@ public class XmlDocumentParser {
     }
 
   }
+
 
   /**
    * Returns the attributes of a document node.

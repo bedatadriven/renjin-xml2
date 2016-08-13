@@ -64,3 +64,18 @@ test.xml_parent <- function() {
     assertThat( xml_parent(xml_parent(doc)), throwsError() )
 
 }
+
+test.xml_root <- function() {
+
+    doc <- read_xml('<foo><bar>Hello world!</bar></foo>')
+
+    children <- xml_children(doc)
+
+    assertThat( xml_root(children), instanceOf("xml_document") )
+
+    # We need to use a special function to compare two nodes as R's identical() will return FALSE:
+    is.same <- org.maartenjan.xml2:::identical_nodes
+
+    assertTrue( is.same(xml_root(children), doc) )
+
+}

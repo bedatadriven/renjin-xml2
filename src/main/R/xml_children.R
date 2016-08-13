@@ -16,3 +16,18 @@ xml_parent <- function(x) {
 xml_parent.xml_node <- function(x) {
   XmlDocumentParser$xml_parent(x$node)
 }
+
+xml_root <- function(x) {
+  stopifnot(inherits(x, c("xml_node", "xml_document", "xml_nodeset")))
+
+  if (inherits(x, "xml_nodeset")) {
+    if (length(x) == 0) {
+      return(NULL)
+    } else {
+      return(xml_root(x[[1]]))
+    }
+  }
+
+  XmlDocumentParser$xml_root(x$doc)
+
+}
