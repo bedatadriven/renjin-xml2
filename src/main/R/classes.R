@@ -18,7 +18,7 @@ print.xml_nodeset <- function(x, width = getOption("width"), max_n = 20, ...) {
     n <- length(x)
     cat("{xml_nodeset (", n, ")}\n", sep = "")
 
-    x <- x[min(n, max_n)]
+    x <- x[seq_len(min(n, max_n))]
 
     for (i in seq_along(x)) {
         cat("[", i, "] ", XmlDocumentParser$node_format(x[[i]]$node), "\n", sep = "")
