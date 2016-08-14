@@ -17,6 +17,11 @@ xml_parent.xml_node <- function(x) {
   XmlDocumentParser$xml_parent(x$node)
 }
 
+
+xml_siblings <- function(x) {
+  XmlDocumentParser$xml_siblings(x$node)
+}
+
 xml_root <- function(x) {
   stopifnot(inherits(x, c("xml_node", "xml_document", "xml_nodeset")))
 

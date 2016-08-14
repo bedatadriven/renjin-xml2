@@ -79,3 +79,28 @@ test.xml_root <- function() {
     assertTrue( is.same(xml_root(children), doc) )
 
 }
+
+test.xml_siblings <- function() {
+    doc <- read_xml('<foo><bar>hello</bar><oof>world</oof>!</foo>')
+
+    # There is only one root element:
+    assertThat( length(xml_siblings(doc)), equalTo(0) )
+
+    children <- xml_children(doc)
+    bar <- children[[1]]
+    oof <- children[[2]]
+
+    assertThat( xml_siblings(bar), instanceOf("xml_nodeset") )
+    assertThat( length(xml_siblings(bar)), equalTo(1) )
+    assertThat( xml_name(xml_siblings(bar)[[1]]), identicalTo("oof") )
+    assertThat( xml_name(xml_siblings(oof)[[1]]), identicalTo("bar"))
+
+    # Test for preservation of order:
+    doc <- read_xml('<foo><bar>hello</bar><oof>world</oof><rab>!</rab></foo>')
+    children <- xml_children(doc)
+
+    assertThat( xml_name(xml_siblings(children[[1]])), identicalTo(c("oof", "rab")) )
+    assertThat( xml_name(xml_siblings(children[[2]])), identicalTo(c("bar", "rab")) )
+    assertThat( xml_name(xml_siblings(children[[3]])), identicalTo(c("bar", "oof")) )
+
+}

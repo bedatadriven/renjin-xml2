@@ -27,8 +27,13 @@ function passed the `XML_PARSE_NOBLANKS` option to *libxml2* by default. Since v
 option is to remove blank nodes, but the exact definition used by *libxml2* for a blank node is not clear, see e.g. 
 [this discussion](https://mail.gnome.org/archives/xml/2009-December/msg00019.html). 
 
-Java has an option to remove certain 'ignorable whitespace' using the `setIgnoringElementContentWhitespace()` method, 
-but the document clearly states that this option can only be used in validating mode.
+Java has an option to remove certain 'ignorable whitespace' using `setIgnoringElementContentWhitespace` when the parser 
+is created, but the 
+[documentation](https://docs.oracle.com/javase/7/docs/api/javax/xml/parsers/DocumentBuilderFactory.html#setIgnoringElementContentWhitespace%28boolean%29) 
+clearly states that this option can only be used in validating mode. At a minimum, this requires a DTD to be present in 
+the XML document.
+
+All this means that behavior between *xml2* and *renjin-xml2* may be different when dealing with blank nodes.
 
 ## License
 

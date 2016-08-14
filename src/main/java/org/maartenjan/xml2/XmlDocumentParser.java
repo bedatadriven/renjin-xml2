@@ -14,6 +14,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.LinkedList;
 
 /**
  * Parses XML documents from R code.
@@ -140,6 +141,12 @@ public class XmlDocumentParser {
   }
 
 
+  /**
+   * Returns the parent node of a node
+   * @param node  a document node
+   * @return      a document node which is the parent of <code>node</code>
+   * @throws    EvalException If <code>node</code> has no parent.
+   */
   public static ListVector xml_parent(Node node) {
 
     Node parent = node.getParentNode();
@@ -157,6 +164,42 @@ public class XmlDocumentParser {
    */
   public static ListVector xml_root(Document doc) {
     return xml_document(doc.getDocumentElement(), doc);
+  }
+
+
+  /**
+   * Returns the siblings of a node
+   * @param node  a document node
+   * @return      an R list of class <code>xml_nodeset</code>
+   */
+  public static ListVector xml_siblings(Node node) {
+
+    LinkedList<Node> siblings = new LinkedList<Node>();
+
+    Node sibling = node.getPreviousSibling();
+    while (sibling != null) {
+      // add sibling at the front ot the list
+      siblings.addFirst(sibling);
+      sibling = sibling.getPreviousSibling();
+    }
+
+    sibling = node.getNextSibling();
+    while (sibling != null) {
+      // add sibling at the end ot the list
+      siblings.addLast(sibling);
+      sibling = sibling.getNextSibling();
+    }
+
+    ListVector.Builder ns = new ListVector.Builder();
+    for (Node s : siblings) {
+      if (s instanceof Element) {
+        ns.add(xml_node(s));
+      }
+    }
+
+    ns.setAttribute("class", new StringArrayVector("xml_nodeset"));
+
+    return ns.build();
   }
 
 
