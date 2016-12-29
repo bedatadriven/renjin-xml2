@@ -1,5 +1,6 @@
 package org.maartenjan.xml2;
 
+import org.jsoup.Jsoup;
 import org.renjin.eval.EvalException;
 import org.renjin.sexp.*;
 import org.renjin.util.NamesBuilder;
@@ -26,7 +27,9 @@ public class XmlDocumentParser {
   /**
    * Parse an XML document as a string.
    *
-   * @param xml   a string with XML
+   * @param xml       a string with XML
+   * @param dtdvalid  a boolean to indicate if the XML processor should be validating or not
+   * @param noblanks  a boolean to indicate if 'ignorable whitespace' should be removed
    * @return      an R list with classes <code>xml_document</code> and <code>xml_node</code>
    * @throws IOException
    */
@@ -71,6 +74,24 @@ public class XmlDocumentParser {
     Element root = doc.getDocumentElement();
 
     return xml_document(root, doc);
+  }
+
+
+  /**
+   * Parse an HTML document as a string.
+   *
+   * @param html      a string with HTML
+   * @param noblanks  a boolean to indicate if 'ignorable whitespace' should be removed
+   * @return      an R list with classes <code>xml_document</code> and <code>xml_node</code>
+   * @throws IOException
+   */
+  public static ListVector parse_html(String html, boolean noblanks) throws IOException {
+
+    org.jsoup.nodes.Document doc = Jsoup.parse(html);
+
+    String xml = doc.outerHtml();
+
+    return parse(xml, false, noblanks);
   }
 
 
@@ -178,14 +199,14 @@ public class XmlDocumentParser {
 
     Node sibling = node.getPreviousSibling();
     while (sibling != null) {
-      // add sibling at the front ot the list
+      // add sibling at the front of the list
       siblings.addFirst(sibling);
       sibling = sibling.getPreviousSibling();
     }
 
     sibling = node.getNextSibling();
     while (sibling != null) {
-      // add sibling at the end ot the list
+      // add sibling at the end of the list
       siblings.addLast(sibling);
       sibling = sibling.getNextSibling();
     }
@@ -237,7 +258,7 @@ public class XmlDocumentParser {
       case Node.TEXT_NODE:
         return "Text: " + node.getTextContent();
       case Node.ELEMENT_NODE:
-        if (node == node.getOwnerDocument().getDocumentElement()) {
+        if (node.isSameNode(node.getOwnerDocument().getDocumentElement())) {
           return "Root: " + node.getNodeName();
         } else {
           return "Element: " + node.getNodeName();
@@ -281,6 +302,7 @@ public class XmlDocumentParser {
 
     return new StringArrayVector(values, attributes.build());
   }
+
 
   public static boolean identical_nodes(Node a, Node b) {
     return a.isSameNode(b);

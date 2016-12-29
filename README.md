@@ -3,8 +3,9 @@
 # renjin-xml2
 
 A drop-in replacement for the [xml2](https://github.com/hadley/xml2) package in Renjin. Note that this replacement 
-package is currently by no means fully functional. For one, it doesn't yet handle HTML files. In the remainder of this 
-README, the term *xml2* refers to the original R package authored by Wickham *et al*.
+package is currently by no means fully functional. Check the [NAMESPACE](NAMESPACE) file to get an impression of which 
+functions are available. In the remainder of this README, the term *xml2* refers to the original R package authored by 
+Wickham *et al*.
 
 ## Some technical details
 
@@ -35,7 +36,18 @@ the XML document.
 
 All this means that behavior between *xml2* and *renjin-xml2* may be different when dealing with blank nodes.
 
+### HTML
+
+The *xml2* includes a function `read_html()` to parse HTML files. HTML looks like XML, but browser will accept HTML 
+documents which are invalid or malformed XML documents. The package uses the 
+[HTMLparser](http://xmlsoft.org/html/libxml-HTMLparser.html) module from the *libxml2* C library to parse (and fix) 
+HTML documents. Java built-in XML processors do not have such an HTML parser, therefore the *renjin-xml2* package uses 
+the [jsoup](https://jsoup.org/) Java library. In particular, we use *jsoup* to parse the document and convert it to a 
+well-formed XML document using the [outerHtml()](https://jsoup.org/apidocs/org/jsoup/nodes/Document.html#outerHtml--) 
+method.
+
 ## License
 
 The *xml2* package is licensed as GPL version 2 or later and this replacement package has the same license. See the 
 [LICENSE](LICENSE) file for the full text of the license.
+

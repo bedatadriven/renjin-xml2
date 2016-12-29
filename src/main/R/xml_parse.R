@@ -1,16 +1,33 @@
 
 # 'read_xml' should do something similar to xml2::read_xml on CRAN
-read_xml <- function(x, ...) {
+read_xml <- function(x, encoding = "", ..., as_html = FALSE, options = "NOBLANKS") {
   UseMethod("read_xml", x)
 }
 
-read_xml.character <- function(x, options = "NOBLANKS") {
-  XmlDocumentParser$parse(x, "DTDVALID" %in% options, "NOBLANKS" %in% options)
+read_xml.character <- function(x, encoding = "", ..., as_html = FALSE, options = "NOBLANKS") {
+    if (as_html) {
+        read_html(x, encoding = encoding, ..., options = options)
+    } else {
+        XmlDocumentParser$parse(x, "DTDVALID" %in% options, "NOBLANKS" %in% options)
+    }
 }
 
-read_xml.default <- function(x, ...) {
+read_xml.default <- function(x, encoding = "", ..., as_html = FALSE, options = "NOBLANKS") {
   stop("no method for object of class ", class(x))
 }
+
+read_html <- function(x, encoding = "", ..., options = c("RECOVER", "NOERROR", "NOBLANKS")) {
+  UseMethod("read_html")
+}
+
+read_html.character <- function(x, encoding = "", ..., options = c("RECOVER", "NOERROR", "NOBLANKS")) {
+  XmlDocumentParser$parse_html(x, "NOBLANKS" %in% options)
+}
+
+read_html.default <- function(x, encoding = "", ..., options = c("RECOVER", "NOERROR", "NOBLANKS")) {
+  stop("no method for object of class ", class(x))
+}
+
 
 # non-exported function to test if the R code can access private methods in the Java class:
 xml_node <- function(x) {
