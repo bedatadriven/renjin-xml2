@@ -1,6 +1,6 @@
 
 library(hamcrest)
-library(org.maartenjan.xml2)
+library(xml2)
 
 test.xml_children <- function() {
 
@@ -56,7 +56,7 @@ test.xml_parent <- function() {
     children <- xml_children(doc)
 
     # We need to use a special function to compare two nodes as R's identical() will return FALSE:
-    is.same <- org.maartenjan.xml2:::identical_nodes
+    is.same <- xml2:::identical_nodes
 
     assertTrue( is.same(xml_parent(children[[1]]), doc) )
 
@@ -74,7 +74,7 @@ test.xml_root <- function() {
     assertThat( xml_root(children), instanceOf("xml_document") )
 
     # We need to use a special function to compare two nodes as R's identical() will return FALSE:
-    is.same <- org.maartenjan.xml2:::identical_nodes
+    is.same <- xml2:::identical_nodes
 
     assertTrue( is.same(xml_root(children), doc) )
 

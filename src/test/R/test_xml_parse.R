@@ -1,6 +1,6 @@
 
 library(hamcrest)
-library(org.maartenjan.xml2)
+library(xml2)
 
 test.read_xml <- function() {
 

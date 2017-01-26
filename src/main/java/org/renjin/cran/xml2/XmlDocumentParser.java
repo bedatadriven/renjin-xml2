@@ -1,4 +1,4 @@
-package org.maartenjan.xml2;
+package org.renjin.cran.xml2;
 
 import org.jsoup.Jsoup;
 import org.renjin.eval.Context;
