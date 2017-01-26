@@ -22,6 +22,14 @@
     <renjin.version>0.8.2141</renjin.version>
   </properties>
 
+  <distributionManagement>
+    <repository>
+      <id>renjin-packages</id>
+      <name>Renjin CI Repository</name>
+      <url>https://nexus.bedatadriven.com/content/repositories/renjin-packages</url>
+    </repository>
+  </distributionManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.renjin</groupId>
