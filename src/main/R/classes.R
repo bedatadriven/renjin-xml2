@@ -5,7 +5,11 @@ print.xml_node <- function(x) {
 }
 
 as.character.xml_node <- function(x, ...) {
-    XmlDocumentParser$node_format(x$node)
+    XmlDocumentParser$xml_write_character(x$node)
+}
+
+as.character.xml_document <- function(x, ...) {
+    XmlDocumentParser$xml_write_character(x$doc)
 }
 
 print.xml_document <- function(x) {

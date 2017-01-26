@@ -104,3 +104,21 @@ test.xml_siblings <- function() {
     assertThat( xml_name(xml_siblings(children[[3]])), identicalTo(c("bar", "oof")) )
 
 }
+
+
+test.xml_add_child <- function() {
+
+    doc <- read_xml('<foo/>')
+
+    xml_add_child(doc, 'error', type = 'catastrophic', message = "No more foos in the bar.")
+
+    children <- xml_children(doc)
+    child <- children[[1]]
+    attrs <- xml_attrs(child)
+
+    assertThat(length(children), identicalTo(1L))
+    assertThat(xml_name(child), identicalTo("error"))
+    assertThat(attrs[['type']], identicalTo('catastrophic'))
+    assertThat(attrs[['message']], identicalTo('No more foos in the bar.'))
+
+}

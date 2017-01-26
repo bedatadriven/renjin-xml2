@@ -36,3 +36,16 @@ xml_root <- function(x) {
   XmlDocumentParser$xml_root(x$doc)
 
 }
+
+xml_add_child <- function(.x, .value, ...,where = length(xml_children(.x)), .copy = TRUE) {
+  UseMethod("xml_add_child")
+}
+
+xml_add_child.xml_node <- function (.x, .value, ..., .where = length(xml_children(.x)),
+                              .copy = inherits(.value, "xml_node")) {
+
+
+  node <- XmlDocumentParser$xml_add_child(.x$node, .value, list(...), .where)
+
+  invisible(node)
+}

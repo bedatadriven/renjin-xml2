@@ -15,4 +15,28 @@ test.xml_attrs <- function() {
         identicalTo(structure(character(0), .Names = character(0)))
     )
 
+    assertThat(xml_attr(doc, 'class'), identicalTo('bar'))
+    assertThat(xml_attr(doc, 'id'), identicalTo('123'))
+    assertThat(xml_attr(doc, 'baz'), identicalTo(NA_character_))
+
+
+
+}
+
+
+test.xml_attr <- function() {
+
+
+    xml <- '<foo/>'
+
+    doc <- read_xml(xml)
+    xml_attr(doc, 'foo') <- 'bar'
+    xml_attr(doc, 'baz') <- 'inga'
+
+    attrs <- xml_attrs(doc)
+
+    assertThat( attrs['foo'], identicalTo(c(foo='bar')))
+    assertThat( attrs['baz'], identicalTo(c(baz='inga')))
+
+
 }

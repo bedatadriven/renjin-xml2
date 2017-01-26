@@ -1,7 +1,11 @@
 package org.maartenjan.xml2;
 
 import org.jsoup.Jsoup;
+import org.renjin.eval.Context;
 import org.renjin.eval.EvalException;
+import org.renjin.invoke.annotations.Current;
+import org.renjin.primitives.io.connections.Connection;
+import org.renjin.primitives.io.connections.Connections;
 import org.renjin.sexp.*;
 import org.renjin.util.NamesBuilder;
 import org.w3c.dom.*;
@@ -13,8 +17,13 @@ import org.xml.sax.SAXParseException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.LinkedList;
 
 /**
@@ -247,7 +256,34 @@ public class XmlDocumentParser {
     return lv.build();
   }
 
+  public static Document xml_new_document(String version, String encoding) throws ParserConfigurationException {
 
+    DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+    Document document = docBuilder.newDocument();
+    document.setXmlVersion(version);
+    document.setXmlStandalone(true);
+
+    return document;
+  }
+
+  public static ListVector xml_set_root_or_add(Document document, String tagName, ListVector attributes) {
+
+    Element child = create_element(document, tagName, attributes);
+
+    if(document.getChildNodes().getLength() == 0) {
+      document.appendChild(child);
+    } else {
+      document.getChildNodes().item(0).appendChild(child);
+    }
+
+    return xml_node(child);
+  }
+
+
+  /**
+   * Formats the node for priting to the console.
+   */
   public static String node_format(Node node) {
 
     short type = node.getNodeType();
@@ -268,9 +304,32 @@ public class XmlDocumentParser {
       default:
         return "Other";
     }
-
   }
 
+  private static void xml_write(Node node, Writer writer) throws TransformerException, IOException {
+    Transformer transformer = TransformerFactory.newInstance().newTransformer();
+    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+    transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, "yes");
+
+    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+
+
+    StreamResult result = new StreamResult(writer);
+    DOMSource source = new DOMSource(node);
+    transformer.transform(source, result);
+    writer.flush();
+  }
+
+  public static String xml_write_character(Node node) throws TransformerException, IOException {
+    StringWriter writer = new StringWriter();
+    xml_write(node, writer);
+    return writer.toString();
+  }
+
+  public static void xml_write_doc(@Current Context context, Document document, SEXP connectionSexp) throws IOException, TransformerException {
+    Connection connection = Connections.getConnection(context, connectionSexp);
+    xml_write(document, connection.getPrintWriter());
+  }
 
   /**
    * Returns the attributes of a document node.
@@ -303,9 +362,55 @@ public class XmlDocumentParser {
     return new StringArrayVector(values, attributes.build());
   }
 
+  public static String xml_attr(Node node, String attr, String defaultValue) {
+    if(!(node instanceof Element)) {
+      return defaultValue;
+    }
+    Element element = (Element) node;
+    if(element.hasAttribute(attr)) {
+      return element.getAttribute(attr);
+    } else {
+      return defaultValue;
+    }
+  }
+
+  public static void set_xml_attr(Node node, String attr, String value) {
+    if(!(node instanceof Element)) {
+      throw new EvalException("Cannot set attribute on node of type " + node.getClass().getSimpleName());
+    }
+    ((Element) node).setAttribute(attr, value);
+  }
 
   public static boolean identical_nodes(Node a, Node b) {
     return a.isSameNode(b);
   }
 
+
+  public static ListVector xml_add_child(Node parentNode, String tagName, ListVector attributes, int where) {
+    if (!(parentNode instanceof Element)) {
+      throw new EvalException("Cannot add element to node of type " + parentNode.getClass().getSimpleName());
+    }
+    Element parent = (Element) parentNode;
+    Element child = create_element(parent.getOwnerDocument(), tagName, attributes);
+
+    if(where >= parent.getChildNodes().getLength() || parent.getChildNodes().getLength() == 0) {
+      parent.appendChild(child);
+
+    } else if(where < 1) {
+      parent.insertBefore(child, parent.getFirstChild());
+
+    } else {
+      Node before = child.getChildNodes().item(where);
+      parent.insertBefore(child, before);
+    }
+    return xml_node(child);
+  }
+
+  private static Element create_element(Document document, String tagName, ListVector attributes) {
+    Element child = document.createElement(tagName);
+    for (NamedValue namedValue : attributes.namedValues()) {
+      child.setAttribute(namedValue.getName(), namedValue.getValue().asString());
+    }
+    return child;
+  }
 }
