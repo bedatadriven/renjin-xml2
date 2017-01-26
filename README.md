@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/mjkallen/renjin-xml2.svg?branch=master)](https://travis-ci.org/mjkallen/renjin-xml2)
+[![Build Status](https://travis-ci.org/bedatadriven/renjin-xml2.svg?branch=master)](https://travis-ci.org/bedatadriven/renjin-xml2)
 
 # renjin-xml2
 
