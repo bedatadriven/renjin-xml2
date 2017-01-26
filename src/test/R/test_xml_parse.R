@@ -33,13 +33,3 @@ test.read_html <- function() {
   assertThat( read_html(html), instanceOf("xml_document") )
 
 }
-
-test.xml_node <- function() {
-
-  doc <- read_xml("<p>foobar</p>")
-  root <- doc$node
-
-  # private methods should not be visible to the R code:
-  assertThat( org.maartenjan.xml2:::xml_node(root), throwsError() )
-
-}
