@@ -1,8 +1,11 @@
-[![Build Status](http://build.renjin.org/job/Replacement-Packages/job/xml2/badge/icon)](http://build.renjin.org/job/Replacement-Packages/job/xml2/) [![Build Status](https://travis-ci.org/bedatadriven/renjin-xml2.svg?branch=master)](https://travis-ci.org/bedatadriven/renjin-xml2)
+Build system | Build status
+------------ | ------------
+build.renjin.org (Jenkins) | [![Build Status](http://build.renjin.org/job/Replacement-Packages/job/xml2/badge/icon)](http://build.renjin.org/job/Replacement-Packages/job/xml2/)
+travis-ci.org (Travis) | [![Build Status](https://travis-ci.org/bedatadriven/renjin-xml2.svg?branch=master)](https://travis-ci.org/bedatadriven/renjin-xml2)
 
 # renjin-xml2
 
-A drop-in replacement for the [xml2](https://github.com/hadley/xml2) package in Renjin. Note that this replacement 
+A drop-in replacement for the [xml2](https://github.com/hadley/xml2) package in [Renjin](http://www.renjin.org). Note that this replacement 
 package is currently by no means fully functional. Check the [NAMESPACE](NAMESPACE) file to get an impression of which 
 functions are available. In the remainder of this README, the term *xml2* refers to the original R package authored by 
 Wickham *et al*.
@@ -38,7 +41,7 @@ All this means that behavior between *xml2* and *renjin-xml2* may be different w
 
 ### HTML
 
-The *xml2* includes a function `read_html()` to parse HTML files. HTML looks like XML, but browser will accept HTML 
+The *xml2* package includes a function `read_html()` to parse HTML files. HTML looks like XML, but browsers will accept HTML 
 documents which are invalid or malformed XML documents. The package uses the 
 [HTMLparser](http://xmlsoft.org/html/libxml-HTMLparser.html) module from the *libxml2* C library to parse (and fix) 
 HTML documents. Java built-in XML processors do not have such an HTML parser, therefore the *renjin-xml2* package uses 
