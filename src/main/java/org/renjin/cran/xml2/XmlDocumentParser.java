@@ -374,12 +374,21 @@ public class XmlDocumentParser {
     }
   }
 
+  public static String xml_text(Node node) {
+    return node.getTextContent();
+  }
+
+  public static void set_xml_text(Node node, String text) {
+    node.setTextContent(text);
+  }
+
   public static void set_xml_attr(Node node, String attr, String value) {
     if(!(node instanceof Element)) {
       throw new EvalException("Cannot set attribute on node of type " + node.getClass().getSimpleName());
     }
     ((Element) node).setAttribute(attr, value);
   }
+
 
   public static boolean identical_nodes(Node a, Node b) {
     return a.isSameNode(b);
