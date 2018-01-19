@@ -28,6 +28,13 @@ read_html.default <- function(x, encoding = "", ..., options = c("RECOVER", "NOE
   stop("no method for object of class ", class(x))
 }
 
+read_html.response <- function(x, encoding = "", options = c("RECOVER",
+    "NOERROR", "NOBLANKS"), ...) {
+
+  options <- parse_options(options, xml_parse_options())
+  content <- httr::content(x, as = "raw")
+  xml2::read_html(content, encoding = encoding, options = options, ...)
+}
 
 # non-exported function to test if the R code can access private methods in the Java class:
 xml_node <- function(x) {
