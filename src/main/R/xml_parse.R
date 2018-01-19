@@ -24,16 +24,17 @@ read_html.character <- function(x, encoding = "", ..., options = c("RECOVER", "N
   XmlDocumentParser$parse_html(x, "NOBLANKS" %in% options)
 }
 
-read_html.default <- function(x, encoding = "", ..., options = c("RECOVER", "NOERROR", "NOBLANKS")) {
-  stop("no method for object of class ", class(x))
+read_html.raw <- function(x, encoding = "", options = c("RECOVER", "NOERROR", "NOBLANKS"), ...) {
+  XmlDocumentParser$parse_html_raw(x, encoding, "NOBLANKS" %in% options)
 }
 
-read_html.response <- function(x, encoding = "", options = c("RECOVER",
-    "NOERROR", "NOBLANKS"), ...) {
-
-  options <- parse_options(options, xml_parse_options())
+read_html.response <- function(x, encoding = "", options = c("RECOVER", "NOERROR", "NOBLANKS"), ...) {
   content <- httr::content(x, as = "raw")
   xml2::read_html(content, encoding = encoding, options = options, ...)
+}
+
+read_html.default <- function(x, encoding = "", ..., options = c("RECOVER", "NOERROR", "NOBLANKS")) {
+  stop("no method for object of class ", class(x))
 }
 
 # non-exported function to test if the R code can access private methods in the Java class:
@@ -43,7 +44,7 @@ xml_node <- function(x) {
 
 # non-exported function to check if two nodes are the same:
 identical_nodes <- function(x, y) {
-  stopifnot(inherits(x, "xml_node"))
-  stopifnot(inherits(y, "xml_node"))
+  #stopifnot(inherits(x, "xml_node"))
+  #stopifnot(inherits(y, "xml_node"))
   XmlDocumentParser$identical_nodes(x$node, y$node)
 }

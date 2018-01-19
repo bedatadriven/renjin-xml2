@@ -1,11 +1,14 @@
 package org.renjin.cran.xml2;
 
 import org.jsoup.Jsoup;
+import org.jsoup.helper.W3CDom;
 import org.renjin.eval.Context;
 import org.renjin.eval.EvalException;
 import org.renjin.invoke.annotations.Current;
 import org.renjin.primitives.io.connections.Connection;
 import org.renjin.primitives.io.connections.Connections;
+import org.renjin.repackaged.guava.base.Charsets;
+import org.renjin.repackaged.guava.base.Strings;
 import org.renjin.sexp.*;
 import org.renjin.util.NamesBuilder;
 import org.w3c.dom.*;
@@ -14,16 +17,19 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import javax.xml.bind.annotation.W3CDomHandler;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import java.io.*;
+import java.lang.annotation.Documented;
 import java.util.LinkedList;
 
 /**
@@ -98,11 +104,20 @@ public class XmlDocumentParser {
 
     org.jsoup.nodes.Document doc = Jsoup.parse(html);
 
-    String xml = doc.outerHtml();
-
-    return parse(xml, false, noblanks);
+    W3CDom helper = new W3CDom();
+    return xml_document(helper.fromJsoup(doc));
   }
 
+  public static ListVector parse_html_raw(RawVector rawVector, String encoding, boolean noblanks) throws IOException {
+    ByteArrayInputStream inputStream = new ByteArrayInputStream(rawVector.toByteArrayUnsafe());
+    if(Strings.isNullOrEmpty(encoding)) {
+      encoding = Charsets.UTF_8.name();
+    }
+    org.jsoup.nodes.Document doc = Jsoup.parse(inputStream, encoding, "");
+
+    W3CDom helper = new W3CDom();
+    return xml_document(helper.fromJsoup(doc));
+  }
 
   /**
    * Returns the name of a document node.
@@ -126,7 +141,6 @@ public class XmlDocumentParser {
       default:
         return "";
     }
-
   }
 
 
@@ -244,6 +258,9 @@ public class XmlDocumentParser {
     return lv.build();
   }
 
+  private static ListVector xml_document(Document doc) {
+    return xml_document(doc.getDocumentElement(), doc);
+  }
 
   private static ListVector xml_document(Node node, Document doc) {
 
@@ -421,5 +438,27 @@ public class XmlDocumentParser {
       child.setAttribute(namedValue.getName(), namedValue.getValue().asString());
     }
     return child;
+  }
+
+  public static ListVector xpath_search(Node node, String xpath) {
+    XPath xPath = XPathFactory.newInstance().newXPath();
+    NodeList nodes;
+    try {
+      nodes = (NodeList)xPath.evaluate(xpath, node, XPathConstants.NODESET);
+    } catch (XPathExpressionException e) {
+      throw new EvalException("Invalid xpath '" + xpath + "': " + e.getMessage());
+    }
+
+    return xml_node_set(nodes);
+  }
+
+  private static ListVector xml_node_set(NodeList nodes) {
+    ListVector.Builder list = new ListVector.Builder(0, nodes.getLength());
+    for (int i = 0; i < nodes.getLength(); i++) {
+      list.add(xml_node(nodes.item(i)));
+    }
+    list.setAttribute(Symbols.CLASS, StringArrayVector.valueOf("xml_nodeset"));
+
+    return list.build();
   }
 }

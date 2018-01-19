@@ -15,6 +15,10 @@ xml_text.xml_node <- function (x, trim = FALSE) {
     res
 }
 
+xml_text.xml_missing <- function(x, trim = FALSE) {
+    NA_character_
+}
+
 
 `xml_text<-` <- function (x, value) {
     UseMethod("xml_text<-")
