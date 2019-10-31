@@ -1,6 +1,5 @@
 Build system | Build status
 ------------ | ------------
-build.renjin.org (Jenkins) | [![Build Status](http://build.renjin.org/job/Replacement-Packages/job/xml2/badge/icon)](http://build.renjin.org/job/Replacement-Packages/job/xml2/)
 travis-ci.org (Travis) | [![Build Status](https://travis-ci.org/bedatadriven/renjin-xml2.svg?branch=master)](https://travis-ci.org/bedatadriven/renjin-xml2)
 
 # renjin-xml2
